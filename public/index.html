@@ -17,22 +17,25 @@
 
         <!-- Countdown Timer -->
         <div id="countdownContainer" class="text-center mb-5" style="display: none;">
-            <h5>Stream Countdown:</h5>
-            <p id="countdownDisplay"></p>
+            <h5>Stream starting in</h5>
+            <h2 id="countdownDisplay"></h2>
         </div>
 
         <!-- Email Signup -->
         <div class="text-center mb-5">
             <p id="emailSignupMessage">Get notified for future streams</p>
             <input type="email" class="form-control mb-3" placeholder="Enter your email" style="max-width: 300px; margin: 0 auto;">
-            <button class="btn btn-primary">Sign Up</button>
+            <button class="btn btn-primary">GO!</button>
         </div>
+        
 
         <!-- Links Section -->
         <div id="linksSection" class="row text-center">
-            <div class="col-md-3" id="link1Container" style="display: none;">
+            <div class="col-md-3" id="link1Container" style="display: none;"><h2>More streams</h2>
+            <br>
                 <a id="link1Anchor" target="_blank">
-                    <img src="https://via.placeholder.com/150" alt="Link 1" class="img-fluid">
+                    <img src="https://img.freepik.com/premium-vector/twitch-logo_578229-259.jpg" style= "width: 150px; height: 150px;" alt="Link 1" class="img-fluid">
+                    <br>twitch
                 </a>
             </div>
             <div class="col-md-3" id="link2Container" style="display: none;">
@@ -87,7 +90,7 @@
                 const countdownDate = new Date(countdownTime).getTime();
                 countdownContainer.style.display = 'block';
                 videoContainer.style.display = 'none';
-                streamTitleElement.textContent = "Stream starting in";
+                streamTitleElement.textContent = "Upcoming stream";
                 emailSignupMessage.textContent = 'Get notified when the stream starts!';
 
                 const interval = setInterval(() => {
@@ -100,7 +103,7 @@
                         countdownContainer.style.display = 'none';
                         videoContainer.style.display = 'block';
                         streamTitleElement.textContent = streamTitle;
-                        emailSignupMessage.textContent = 'Sign up for updates!';
+                        emailSignupMessage.textContent = 'Become a member!';
                     } else {
                         // Update countdown
                         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
