@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Admin Page</h1>
+        
+        <!-- Stream Title -->
+        <div class="form-group">
+            <label for="streamTitleInput">Stream Title</label>
+            <input type="text" id="streamTitleInput" class="form-control" placeholder="Enter stream title">
+        </div>
+
+        <!-- Video URL -->
+        <div class="form-group">
+            <label for="videoUrlInput">Video URL</label>
+            <input type="url" id="videoUrlInput" class="form-control" placeholder="Enter video URL">
+        </div>
+
+        <!-- Stream Countdown Section -->
+        <div class="form-group">
+            <label for="countdownInput">Stream Start Date and Time</label>
+            <input type="text" id="countdownInput" class="form-control">
+            <button id="saveCountdownBtn" class="btn btn-primary mt-2">Save Countdown</button>
+        </div>
+
+        <!-- Countdown Timer Preview -->
+        <div id="countdownPreview" style="display: none;">
+            <h5>Stream Countdown Timer:</h5>
+            <p id="countdownDisplay"></p>
+        </div>
+
+        <!-- Links Section (4 Image Links) -->
+        <div id="linksSection" class="mt-4">
+            <h5>Add Stream Links</h5>
+            <div class="form-group">
+                <div class="d-flex justify-content-between">
+                    <div class="form-inline">
+                        <img src="https://via.placeholder.com/150" alt="Link 1" class="img-fluid mr-2">
+                        <input type="url" id="link1" class="form-control" placeholder="Enter URL for link 1">
+                        <button id="addLink1" class="btn btn-secondary ml-2">Add</button>
+                    </div>
+                    <div class="form-inline">
+                        <img src="https://via.placeholder.com/150" alt="Link 2" class="img-fluid mr-2">
+                        <input type="url" id="link2" class="form-control" placeholder="Enter URL for link 2">
+                        <button id="addLink2" class="btn btn-secondary ml-2">Add</button>
+                    </div>
+                    <div class="form-inline">
+                        <img src="https://via.placeholder.com/150" alt="Link 3" class="img-fluid mr-2">
+                        <input type="url" id="link3" class="form-control" placeholder="Enter URL for link 3">
+                        <button id="addLink3" class="btn btn-secondary ml-2">Add</button>
+                    </div>
+                    <div class="form-inline">
+                        <img src="https://via.placeholder.com/150" alt="Link 4" class="img-fluid mr-2">
+                        <input type="url" id="link4" class="form-control" placeholder="Enter URL for link 4">
+                        <button id="addLink4" class="btn btn-secondary ml-2">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save Stream Data Button -->
+        <button id="saveStreamData" class="btn btn-success mt-3">Save Stream</button>
+        <!-- Cancel Stream Button -->
+        <button id="cancelStreamBtn" class="btn btn-danger mt-3">Cancel Stream</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Initialize flatpickr date and time picker
+        flatpickr("#countdownInput", {
+            enableTime: true,  // Enable time selection
+            dateFormat: "Y-m-d H:i",  // Format for the selected date and time
+        });
+
+        // Function to save stream data (title, video URL, countdown, and links) to localStorage
+        function saveStreamData() {
+            const streamTitle = document.getElementById('streamTitleInput').value;
+            const videoUrl = document.getElementById('videoUrlInput').value;
+            const countdownTime = document.getElementById('countdownInput').value;
+            const link1 = document.getElementById('link1').value;
+            const link2 = document.getElementById('link2').value;
+            const link3 = document.getElementById('link3').value;
+            const link4 = document.getElementById('link4').value;
+
+            // Save data to localStorage
+            localStorage.setItem('streamTitle', streamTitle);
+            localStorage.setItem('videoURL', videoUrl);
+            localStorage.setItem('streamCountdownTime', countdownTime);
+            localStorage.setItem('link1', link1);
+            localStorage.setItem('link2', link2);
+            localStorage.setItem('link3', link3);
+            localStorage.setItem('link4', link4);
+
+            alert('Stream data saved!');
+        }
+
+        // Function to display the countdown timer on the admin page
+        function showCountdownPreview() {
+            const countdownTime = document.getElementById('countdownInput').value;
+            if (countdownTime) {
+                const countdownDate = new Date(countdownTime).getTime();
+                const countdownDisplay = document.getElementById('countdownDisplay');
+
+                // Update the countdown every second
+                const countdownInterval = setInterval(function() {
+                    const now = new Date().getTime();
+                    const distance = countdownDate - now;
+
+                    if (distance <= 0) {
+                        clearInterval(countdownInterval);
+                        countdownDisplay.innerHTML = 'The stream has started!';
+                    } else {
+                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                        countdownDisplay.innerHTML = `Stream starts in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    }
+                }, 1000);
+
+                document.getElementById('countdownPreview').style.display = 'block';
+            }
+        }
+
+        // Event listener to save stream data
+        document.getElementById('saveStreamData').addEventListener('click', saveStreamData);
+
+        // Event listener to show the countdown preview when the countdown input is changed
+        document.getElementById('countdownInput').addEventListener('input', showCountdownPreview);
+
+        // Event listeners for adding links
+        document.getElementById('addLink1').addEventListener('click', function() {
+            const link = document.getElementById('link1').value;
+            localStorage.setItem('link1', link);
+        });
+        document.getElementById('addLink2').addEventListener('click', function() {
+            const link = document.getElementById('link2').value;
+            localStorage.setItem('link2', link);
+        });
+        document.getElementById('addLink3').addEventListener('click', function() {
+            const link = document.getElementById('link3').value;
+            localStorage.setItem('link3', link);
+        });
+        document.getElementById('addLink4').addEventListener('click', function() {
+            const link = document.getElementById('link4').value;
+            localStorage.setItem('link4', link);
+        });
+        
+        // Function to cancel the stream and reset data
+        document.getElementById('cancelStreamBtn').addEventListener('click', function() {
+            // Clear all stream-related data in localStorage
+            localStorage.removeItem('streamTitle');
+            localStorage.removeItem('videoURL');
+            localStorage.removeItem('streamCountdownTime');
+            localStorage.removeItem('link1');
+            localStorage.removeItem('link2');
+            localStorage.removeItem('link3');
+            localStorage.removeItem('link4');
+            
+            // Reset the input fields
+            document.getElementById('streamTitleInput').value = '';
+            document.getElementById('videoUrlInput').value = '';
+            document.getElementById('countdownInput').value = '';
+            document.getElementById('link1').value = '';
+            document.getElementById('link2').value = '';
+            document.getElementById('link3').value = '';
+            document.getElementById('link4').value = '';
+            document.getElementById('countdownPreview').style.display = 'none';
+            
+            alert('Stream has been canceled and data cleared.');
+        });
+    </script>
+</body>
+</html>
