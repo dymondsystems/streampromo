@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 id="streamTitle" class="text-center">No Stream</h1>
+
+        <!-- Video Embed -->
+        <div id="videoContainer" class="text-center mb-5" style="display: none;">
+            <iframe id="videoEmbed" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div id="countdownContainer" class="text-center mb-5" style="display: none;">
+            <h5>Stream Countdown:</h5>
+            <p id="countdownDisplay"></p>
+        </div>
+
+        <!-- Email Signup -->
+        <div class="text-center mb-5">
+            <p id="emailSignupMessage">Get notified for future streams</p>
+            <input type="email" class="form-control mb-3" placeholder="Enter your email" style="max-width: 300px; margin: 0 auto;">
+            <button class="btn btn-primary">Sign Up</button>
+        </div>
+
+        <!-- Links Section -->
+        <div id="linksSection" class="row text-center">
+            <div class="col-md-3" id="link1Container" style="display: none;">
+                <a id="link1Anchor" target="_blank">
+                    <img src="https://via.placeholder.com/150" alt="Link 1" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-3" id="link2Container" style="display: none;">
+                <a id="link2Anchor" target="_blank">
+                    <img src="https://via.placeholder.com/150" alt="Link 2" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-3" id="link3Container" style="display: none;">
+                <a id="link3Anchor" target="_blank">
+                    <img src="https://via.placeholder.com/150" alt="Link 3" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-3" id="link4Container" style="display: none;">
+                <a id="link4Anchor" target="_blank">
+                    <img src="https://via.placeholder.com/150" alt="Link 4" class="img-fluid">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadStreamData() {
+            // Load data from localStorage
+            const streamTitle = localStorage.getItem('streamTitle') || "No Stream";
+            const videoURL = localStorage.getItem('videoURL');
+            const countdownTime = localStorage.getItem('streamCountdownTime');
+            const links = [
+                localStorage.getItem('link1'),
+                localStorage.getItem('link2'),
+                localStorage.getItem('link3'),
+                localStorage.getItem('link4'),
+            ];
+
+            // DOM Elements
+            const streamTitleElement = document.getElementById('streamTitle');
+            const countdownContainer = document.getElementById('countdownContainer');
+            const countdownDisplay = document.getElementById('countdownDisplay');
+            const videoContainer = document.getElementById('videoContainer');
+            const videoEmbed = document.getElementById('videoEmbed');
+            const emailSignupMessage = document.getElementById('emailSignupMessage');
+
+            // Update Video Embed if URL exists
+            if (videoURL) {
+                const videoId = videoURL.includes("youtube.com") ? videoURL.split('v=')[1]?.split('&')[0] : null;
+                if (videoId) {
+                    videoEmbed.src = `https://www.youtube.com/embed/${videoId}`;
+                }
+            }
+
+            // Countdown Timer Logic
+            if (countdownTime) {
+                const countdownDate = new Date(countdownTime).getTime();
+                countdownContainer.style.display = 'block';
+                videoContainer.style.display = 'none';
+                streamTitleElement.textContent = "Stream starting in";
+                emailSignupMessage.textContent = 'Get notified when the stream starts!';
+
+                const interval = setInterval(() => {
+                    const now = new Date().getTime();
+                    const distance = countdownDate - now;
+
+                    if (distance <= 0) {
+                        clearInterval(interval);
+                        // Countdown is over: Show video and stream title
+                        countdownContainer.style.display = 'none';
+                        videoContainer.style.display = 'block';
+                        streamTitleElement.textContent = streamTitle;
+                        emailSignupMessage.textContent = 'Sign up for updates!';
+                    } else {
+                        // Update countdown
+                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                        countdownDisplay.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    }
+                }, 1000);
+            } else {
+                // No Countdown: Default state
+                streamTitleElement.textContent = "No Stream";
+                countdownContainer.style.display = 'none';
+                videoContainer.style.display = 'none';
+                emailSignupMessage.textContent = 'Get notified for future streams';
+            }
+
+            // Update Links Section
+            links.forEach((link, index) => {
+                if (link) {
+                    const linkContainer = document.getElementById(`link${index + 1}Container`);
+                    const linkAnchor = document.getElementById(`link${index + 1}Anchor`);
+                    linkAnchor.href = link;
+                    linkContainer.style.display = 'block';
+                }
+            });
+        }
+
+        // Load data on page load
+        window.onload = loadStreamData;
+    </script>
+</body>
+</html>
